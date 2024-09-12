@@ -1,39 +1,4 @@
  "use client"
-// import { useState, useEffect } from "react"; 
-
-// function getCurrentDate(){
-
-// }
-// export default function Home() {
-//   const date = getCurrentDate();
-
-//   const [weatherDate, setWeatherDate] = useState(null);
-//   const [city,setCity] = useState("Lahore");
-
-//   async function fetchData(cityName: string){
-//     try{
-//       const response = await fetch(
-//       "http://location:3000/api/weather?address=" + cityName 
-//       );
-//       const jsonData = (await response.json()).data
-//     }catch (error) {
-//       console.log(error);
-//     }
-//   }
-
-//   useEffect(() => {
-//     fetchData("lahore");
-//   },[]);
-//   return (
-//     <div>
-//     Weather App
-//     </div>
-
-//   );
-// }
-
-
-
 import { useEffect, useState, } from "react";
 import "./page.modules.css";
 
@@ -61,9 +26,31 @@ export default function Home() {
       console.error("Error fetching data:", error);
     }
   }
-useEffect(()=>{
-  fetchData("Lahore")
-},[]);
+  async function fetchDataByCoordinates(latitude:string, longitude:string) {
+    try {
+      const response = await fetch(
+       ` http://localhost:3000/api/weather?lat=${latitude}&lon=${longitude}`
+      );
+      const jsonData = (await response.json()).data;
+      setWeatherData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchDataByCoordinates(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting geolocation:", error);
+        }
+      );
+    }
+  }, []);
  
 return (
   <main className="flex justify-center p-4 bg-gray-100 h-[28rem]">
