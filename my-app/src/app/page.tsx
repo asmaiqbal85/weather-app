@@ -4,10 +4,21 @@ import "./page.modules.css";
 
 function getCurrentDate() {
   const currentDate = new Date();
-  const options = { month: "long" };
-  const monthName = currentDate.toLocaleString("en-US", options);
-  const date = new Date().getDate() + ", " + monthName;
-  return date;
+  const options = { 
+    month: "short", // shortened month name (e.g. Sep)
+    day: "numeric", // day of the month (e.g. 13)
+    year: "numeric" // full year (e.g. 2024)
+  };
+  const timeOptions = { 
+    hour: "2-digit", // hour in 12-hour format
+    minute: "2-digit", // minute
+    hour12: true // adds AM/PM
+  };
+
+  const dateString = currentDate.toLocaleString("en-US", options);
+  const timeString = currentDate.toLocaleString("en-US", timeOptions);
+
+  return `${dateString}, ${timeString}`;
 }
 export default function Home() {
   const date = getCurrentDate();
